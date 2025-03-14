@@ -1,25 +1,35 @@
-import React from 'react';
+import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 
 export default function Form({ onSubmit, currentUser }) {
+  const [message, setMessage] = useState('');
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    onSubmit({
+      userId: currentUser?.accountId || 'guest',
+      message: message
+    });
+    setMessage('');
+  };
+
   return (
-    <form onSubmit={onSubmit}>
-      <fieldset id="fieldset">
-        <p>Add or update your status message!</p>
-        <p className="highlight">
+    <div className="status-form">
+      <h3>Add or update your status message!</h3>
+      <form onSubmit={handleSubmit}>
+        <div className="form-group">
           <label htmlFor="message">Message:</label>
           <input
-            autoComplete="off"
-            autoFocus
+            type="text"
             id="message"
+            value={message}
+            onChange={(e) => setMessage(e.target.value)}
             required
           />
-        </p>
-        <button type="submit">
-          Update
-        </button>
-      </fieldset>
-    </form>
+        </div>
+        <button type="submit">Update</button>
+      </form>
+    </div>
   );
 }
 
@@ -28,4 +38,8 @@ Form.propTypes = {
   currentUser: PropTypes.shape({
     accountId: PropTypes.string.isRequired
   })
+};
+
+Form.defaultProps = {
+  currentUser: { accountId: 'guest' }
 };
